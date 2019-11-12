@@ -1,0 +1,27 @@
+{
+  "name": "snap",
+  "version": "0.0.1",
+  "description": "Create modern apps with ZERO JavaScript.",
+  "main": "dist/snap.min.js",
+  "scripts": {
+    "test": "npm run build && jest",
+    "build": "uglifyjs-folder src -o dist/snap.min.js"
+  },
+  "author": "Eyder Padoan Sant'Anna <eyderpadoan@gmail.com>",
+  "license": "ISC",
+  "repository": "eyder/snap",
+  "keyworkds": [],
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.5.1",
+    "eslint-plugin-es5": "^1.4.1",
+    "jest": "^24.9.0",
+    "jest-puppeteer": "^4.3.0",
+    "puppeteer": "^1.20.0",
+    "uglify-js": "^3.6.1",
+    "uglifyjs-folder": "^1.5.1"
+  }
+}
