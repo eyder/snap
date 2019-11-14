@@ -1,15 +1,15 @@
-function SnapSelectors() { }
+var snapSelectors = new function() {
 
-SnapSelectors.prototype.findForms = function(ref) {
-  return ref.querySelectorAll('form[data-snap]');
+  this.findForms = function(ref) {
+    return ref.querySelectorAll('form[data-snap]');
+  }
+
+  this.findLinks = function(ref) {
+    return ref.querySelectorAll('a[data-snap]');
+  }
+
+  this.findTargets = function(ref) {
+    return ref.querySelectorAll('[data-snap-target]');
+  }
+
 }
-
-SnapSelectors.prototype.findLinks = function(ref) {
-  return ref.querySelectorAll('a[data-snap]');
-}
-
-SnapSelectors.prototype.findTargets = function(ref) {
-  return ref.querySelectorAll('[data-snap-target]');
-}
-
-window.SnapSelectors = new SnapSelectors();

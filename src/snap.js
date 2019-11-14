@@ -1,23 +1,27 @@
 
-function Snap() {
-  document.addEventListener("DOMContentLoaded", this.registerSnapElements());
-}
+var snap = new function() {
 
-Snap.prototype.registerSnapElements = function() {
-  /*
-  var forms = window.SnapSelectors.findForms(document.body);
-  forms.forEach(function(form) {
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      fetch('snap-form-1');
-    })
-  });
-  */
-  var links = window.SnapSelectors.findLinks(document.body);
-  //links.forEach(function(link) {
-  for (var i = 0, len = links.length; i < len; i++) {
-    window.SnapLinks.addClickListener(links[i]);
+  this.load = function() {
+    document.addEventListener("DOMContentLoaded", this.registerSnapElements(document.body));
   }
+
+  this.registerSnapElements = function(ref) {
+    /*
+    var forms = window.SnapSelectors.findForms(document.body);
+    forms.forEach(function(form) {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        fetch('snap-form-1');
+      })
+    });
+    */
+    var links = window.snapSelectors.findLinks(ref);
+    //links.forEach(function(link) {
+    for (var i = 0, len = links.length; i < len; i++) {
+      window.snapLinks.addClickListener(links[i]);
+    }
+  }
+
 }
 
-window.snap = new Snap();
+window.snap.load();
