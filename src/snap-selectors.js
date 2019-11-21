@@ -8,7 +8,7 @@ var snapSelectors = new function() {
     return ref.querySelectorAll('a[data-snap]');
   }
 
-  this.findTargets = function(ref) {
+  this.findElementsWithTarget = function(ref) {
     return ref.querySelectorAll('[data-snap-target]');
   }
 

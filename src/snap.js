@@ -2,10 +2,16 @@
 var snap = new function() {
 
   this.load = function() {
-    document.addEventListener("DOMContentLoaded", this.registerSnapElements(document.body));
+    document.addEventListener("DOMContentLoaded", this.convertLinksToAsync(document.body));
   }
 
-  this.registerSnapElements = function(ref) {
+  this.convertLinksToAsync = function(ref) {
+    var links = window.snapSelectors.findLinks(ref);
+    for (var i = 0, len = links.length; i < len; i++) {
+      window.snapLinks.convertToAsync(links[i], window.snap.onElementLoaded);
+    }
+  }
+
     /*
     var forms = window.SnapSelectors.findForms(document.body);
     forms.forEach(function(form) {
@@ -15,11 +21,17 @@ var snap = new function() {
       })
     });
     */
-    var links = window.snapSelectors.findLinks(ref);
-    //links.forEach(function(link) {
-    for (var i = 0, len = links.length; i < len; i++) {
-      window.snapLinks.addClickListener(links[i]);
+
+  this.onElementLoaded = function(element, event) {
+    var elementsWithTarget = window.snapSelectors.findElementsWithTarget(element);
+    if (elementsWithTarget == null || elementsWithTarget.length === 0) {
+      event.target.parentNode.replaceChild(element.documentElement, event.target);
+    } else {
+      for (var i = 0, len = elementsWithTarget.length; i < len; i++) {
+        // TODO
+      }
     }
+
   }
 
 }
