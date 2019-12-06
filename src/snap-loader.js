@@ -1,19 +1,31 @@
-var snapLoader = new function() {
+var snap = snap || {};
 
-  this.get = function(href) {
-    return fetch(href)
-      .then(function(response) {
-        return response.text()
-          .then(function(text) {
-            return new DOMParser().parseFromString(text, "text/xml");
-          })
-          .catch(function(error) {
-            console.error("SNAP: Error trying to read respose text", error);
-          });
-      })
-      .catch(function(error) {
-        console.error("SNAP: Error trying to fetch URL " + href, error);
-      });
+snap.loader = new function() {
+
+  this.load = function(content, event, onContentLoaded) {
+    var elementsWithTarget = snap.selectors.findElementsWithTarget(content);
+    if (elementsWithTarget == null || elementsWithTarget.length === 0) {
+      this.loadOnEventTarget(content, event, onContentLoaded);
+    } else {
+      for (var i = 0, len = elementsWithTarget.length; i < len; i++) {
+        var targets = snap.selectors.findTargets(document, elementsWithTarget[i]);
+        this.loadOnTargets(elementsWithTarget[i], targets, onContentLoaded);
+      }
+    }
+  }
+
+  this.loadOnEventTarget = function(content, event, onContentLoaded) {
+    event.target.parentNode.replaceChild(content.documentElement, event.target);
+    onContentLoaded(content.documentElement);
+  }
+
+  this.loadOnTargets = function(content, targets, onContentLoaded) {
+    for (var i = 0, len = targets.length; i < len; i++) {
+      content.documentElement.getAttribute('da')
+      targets[i]
+      event.target.parentNode.replaceChild(content.documentElement, event.target);
+      onContentLoaded(content.documentElement);
+    }
   }
 
 }

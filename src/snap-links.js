@@ -1,10 +1,18 @@
-var snapLinks = new function() {
+var snap = snap || {};
 
-  this.convertToAsync = function(link, onElementLoaded) {
+snap.links = new function() {
+
+  this.convertAllToAsync = function(links, onContentReceived) {
+    for (var i = 0, len = links.length; i < len; i++) {
+      this.convertToAsync(links[i], onContentReceived);
+    }
+  }
+
+  this.convertToAsync = function(link, onContentReceived) {
     link.addEventListener('click', function(event) {
       event.preventDefault();
-      window.snapLoader.get(event.target.href)
-        .then(function(element) { onElementLoaded(element, event)});
+      snap.async.get(event.target.href)
+        .then(function(element) { onContentReceived(element, event)});
     });
   }
 

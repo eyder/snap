@@ -41,9 +41,7 @@ describe('SNAP', () => {
   it('replaces targets with response body when there are data-snap-target attributes on the response', async () => {
     await page.click('#link-with-two-targets');
     (await global.expect$('#link-with-two-targets')).not.toBeNull();
-    (await global.expect$('#content-for-target-1')).not.toBeNull();
-    (await global.expect$('#content-for-target-2')).not.toBeNull();
-    (await global.expect$Content('#target-1')).toBe("");
-    (await global.expect$Content('#target-2')).toBe("");
+    (await global.expect$('#target-1 #content-for-target-1')).not.toBeNull();
+    (await global.expect$('#target-2 #content-for-target-2')).not.toBeNull();
   });
 });
