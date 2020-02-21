@@ -21,8 +21,6 @@ snap.loader = new function() {
 
   this.loadOnTargets = function(content, targets, onContentLoaded) {
     for (var i = 0, len = targets.length; i < len; i++) {
-      content.documentElement.getAttribute('da')
-      targets[i]
       event.target.parentNode.replaceChild(content.documentElement, event.target);
       onContentLoaded(content.documentElement);
     }

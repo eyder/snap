@@ -24,13 +24,12 @@ var mocks = [
   },
 ]
 
-describe('SNAP', () => {
-  beforeAll(async () => {
-    global.setupPage(testPage);
-    global.mockRequests(page, mocks);
+describe('SNAP links', () => {
+  beforeAll(async (done) => {
+    await global.setupPage(testPage);
+    await global.mockRequests(page, mocks);
+    done();
   });
-  afterEach(() => {
-  })
   it('replaces link tag with response body when there is no data-snap-target on the response', async () => {
     await page.click('#link-without-target');
     (await global.expect$('#link-without-target')).toBeNull();

@@ -7,7 +7,7 @@ snap.async = new function() {
       .then(function(response) {
         return response.text()
           .then(function(text) {
-            return new DOMParser().parseFromString(text, "text/xml");
+            return snap.DOMParser.parseFromXMLString(text);
           })
           .catch(function(error) {
             console.error("SNAP: Error trying to read respose text", error);
