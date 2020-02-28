@@ -1,59 +1,67 @@
-
-const completeHTMLWithOneChildInBody = `
-<html>
-  <head>
-    <base href="http://localhost:8080" />
-  </head>
-  <body>
-    <div>
-      <h1>title</h1>
-      <p>content</p>
-    </div>
-  </body>
-</html>
-`;
-
-const completeHTML = `
-<html>
-  <head>
-    <base href="http://localhost:8080" />
-  </head>
-  <body>
-    <h1>title</h1>
-    <p>content</p>
-  </body>
-</html>
-`;
-
-const simpleContentHTML = `
-<div>
-  <h1>title</h1>
-  <p>content</p>
-</div>
-`;
-
-const invalidHTMLWithoutRootTag = `
-<h1>title</h1>
-<p>content</p>
-`
-
 describe('SNAP DOM Parser', () => {
+
+  let resultHandle;
+  let htmlToParse;
+
   beforeAll(async (done) => {
     await global.setupPage('<body></body>');
     done();
   });
-  it(`returns a document with html body first child
-      when the HTML body contains only one child
-      and no data-snap-target attribute is present in the whole body`,
-    async () => {
-      const elementHandle = await page.evaluateHandle(
-        (hmtl) => window.snap.DOMParser.parseFromXMLString(hmtl),
-        completeHTMLWithOneChildInBody
-      );
-      expect(await page.evaluate((element)=>element.tagName, elementHandle)).toBe('div');
-      expect(await page.evaluate((element)=>element.children[0].tagName, elementHandle)).toBe('h1');
-      expect(await page.evaluate((element)=>element.children[1].tagName, elementHandle)).toBe('p');
-      await elementHandle.dispose();
-    }
-  );
+
+  beforeEach(async (done) => {
+    resultHandle = await page.evaluateHandle(
+      (hmtl) => window.snap.DOMParser.parseFromXMLString(hmtl),
+      htmlToParse
+    );
+    done();
+  });
+
+  afterEach(async (done) => {
+    htmlToParse = undefined;
+    await resultHandle.dispose();
+    done();
+  });
+
+  describe(`when the HTML body contains only one child and no data-snap-target`, () => {
+
+    beforeAll(() => {
+      htmlToParse = `
+        <html>
+          <body>
+            <div>
+              <h1>title</h1>
+              <p>content</p>
+            </div>
+          </body>
+        </html>`;
+    });
+
+    it(`returns an element with html body's first child`,
+      async () => {
+        expect(await page.evaluate((element)=>element.tagName, resultHandle)).toBe('div');
+        expect(await page.evaluate((element)=>element.children[0].tagName, resultHandle)).toBe('h1');
+        expect(await page.evaluate((element)=>element.children[1].tagName, resultHandle)).toBe('p');
+      }
+    );
+  });
+  describe(`when the HTML body contains more than one child and no data-snap-target`, () => {
+
+    beforeAll(() => {
+      htmlToParse = `
+        <html>
+          <body>
+            <h1>title</h1>
+            <p>content</p>
+          </body>
+        </html>`;
+    });
+
+    it(`returns an div element with html body's content inside`,
+      async () => {
+        expect(await page.evaluate((element)=>element.tagName, resultHandle)).toBe('div');
+        expect(await page.evaluate((element)=>element.children[0].tagName, resultHandle)).toBe('h1');
+        expect(await page.evaluate((element)=>element.children[1].tagName, resultHandle)).toBe('p');
+      }
+    );
+  });
 });

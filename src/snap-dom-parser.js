@@ -11,7 +11,9 @@ snap.DOMParser = new function() {
     }
     var body = document.querySelector('body');
     if (body) {
-      return body.children[0];
+      if (body.children.length == 1) {
+        return body.children[0];
+      }
     }
     return body;
   }
