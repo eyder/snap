@@ -4,7 +4,7 @@ global.mockRequests = async (page, mocks) => {
     for(let mock of mocks) {
       if (request.url().endsWith(mock.url)) {
         request.respond({
-          status: 200,
+          status: mock.status || 200,
           contentType: 'text/html',
           body: mock.body
         });

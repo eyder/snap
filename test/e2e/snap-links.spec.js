@@ -1,46 +1,56 @@
 
-const testPage = `
-<head>
-  <base href="http://localhost:8080" />
-</head>
-<body>
-  <a id="link-without-target" href="./content-without-target" data-snap>link-without-target</a>
-  <a id="link-with-two-targets" href="./content-with-two-targets" data-snap>link-with-two-targets</a>
-  <div id="target-1"></div>
-  <div id="target-2"></div>
-</body>
-`;
-
-var mocks = [
-  {
-    url: '/content-without-target',
-    body: '<div id="content-without-target">content-without-target</div>'
-  },
-  {
-    url: '/content-with-two-targets',
-    body: `
-      <div id="content-for-target-1" data-snap-target="#target-1">content-for-target-1</div>
-      <div id="content-for-target-2" data-snap-target="#target-2">content-for-target-2</div>`
-  },
-]
-
 describe('SNAP links', () => {
-  beforeAll(async (done) => {
-    await global.setupPage(testPage);
+
+  let currentPageHTML;
+  let mocks;
+
+  beforeEach(async (done) => {
+    await global.setupPage(currentPageHTML);
     await global.mockRequests(page, mocks);
     done();
   });
-  it('replaces link tag with response body when there is no data-snap-target on the response', async () => {
-    await page.click('#link-without-target');
-    (await global.expect$('#link-without-target')).toBeNull();
-    (await global.expect$('#content-without-target')).not.toBeNull();
-    (await global.expect$Content('#target-1')).toBe("");
-    (await global.expect$Content('#target-2')).toBe("");
-  });
-  it('replaces targets with response body when there are data-snap-target attributes on the response', async () => {
-    await page.click('#link-with-two-targets');
-    (await global.expect$('#link-with-two-targets')).not.toBeNull();
-    (await global.expect$('#target-1 #content-for-target-1')).not.toBeNull();
-    (await global.expect$('#target-2 #content-for-target-2')).not.toBeNull();
+
+  describe(`when the current page has a link with data-snap-target`, () => {
+
+    beforeAll(() => {
+      currentPageHTML = `
+        <head>
+          <base href="http://localhost:8080" />
+        </head>
+        <body>
+          <article>
+            <h1>Main content</h1>
+            <section id="part-1">
+              <p>The first part of this article...</p>
+            </section>
+            <a href="./part-2" id="part-2-link" data-snap-target="#part-2">Read more</a>
+            <section id="part-2">
+            </section>
+          </article>
+        </body>`;
+    });
+
+    describe(`and clicking on the link returns 200 and a valid HTML`, () => {
+
+      beforeAll(() => {
+        mocks = [{
+          url: '/part-2',
+          status: 200,
+          body: `<html><body><p>The second part of this article...</p></body></html>`
+        }];
+      });
+
+      describe(`when the user clicks on the link`, () => {
+
+        beforeEach(async (done) => {
+          await page.click('#part-2-link');
+          done();
+        });
+
+        it('replaces the target with response body', async () => {
+          (await global.expect$('article section#part-2 p')).not.toBeNull();
+        });
+      });
+    });
   });
 });

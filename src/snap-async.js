@@ -7,14 +7,12 @@ snap.async = new function() {
       .then(function(response) {
         return response.text()
           .then(function(text) {
-            return snap.DOMParser.parseFromXMLString(text);
+            return snap.parser.getElementsToLoad(text);
           })
           .catch(function(error) {
             console.error("SNAP: Error trying to read respose text", error);
+            throw error;
           });
-      })
-      .catch(function(error) {
-        console.error("SNAP: Error trying to fetch URL " + href, error);
       });
   }
 

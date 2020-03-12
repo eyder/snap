@@ -2,32 +2,41 @@ var snap = snap || {};
 
 snap.selectors = new function() {
 
-  this.DATA_SNAP_TARGET = 'data-snap-target';
-
   this.findForms = function(rootElement) {
-    return rootElement.querySelectorAll('form[data-snap]');
+    return rootElement.querySelectorAll('form[' + snap.constants.data.TARGET + ']');
   }
 
   this.findLinks = function(rootElement) {
-    return rootElement.querySelectorAll('a[data-snap]');
+    return rootElement.querySelectorAll('a[' + snap.constants.data.TARGET + ']');
   }
 
-  this.findElementsWithTarget = function(rootElement) {
-    return rootElement.querySelectorAll('[' + this.DATA_SNAP_TARGET + ']');
+  this.findNavs = function(rootElement) {
+    return rootElement.querySelectorAll('nav[' + snap.constants.data.TARGET + ']');
   }
 
-  this.findTargets = function(rootElement, elementWithTarget) {
-    var targetValue = this.getTargetValue(elementWithTarget);
-    var targets = rootElement.querySelectorAll(targetValue);
-    if (targets == null || targets.length === 0) {
-      console.error('SNAP: no target found for ' + this.DATA_SNAP_TARGET + ' = ' + targetValue);
-      return [];
+  this.findTarget = function(triggerElement) {
+    return this.findTargetElement(triggerElement, snap.constants.data.TARGET);
+  }
+
+  this.findErrorTarget = function(triggerElement) {
+    return this.findTargetElement(triggerElement, snap.constants.data.ERROR_TARGET);
+  }
+
+  this.findTargetElement = function(triggerElement, targetAttribute) {
+    var targetValue = triggerElement.getAttribute(targetAttribute);
+    var target = document.querySelector(targetValue);
+    if (target == null) {
+      console.error('SNAP: no target found for ' + targetAttribute + ' = ' + targetValue);
     }
-    return targets;
+    return target;
   }
 
-  this.getTargetValue = function(element) {
-    return element.getAttribute(this.DATA_SNAP_TARGET);
+  this.getMode = function(triggerElement) {
+    var mode = triggerElement.getAttribute(snap.constants.data.MODE);
+    if (mode && !snap.constants.modes.indexOf(mode) >= 0) {
+      console.error('SNAP: invalid ' + snap.constants.data.MODE + ' = ' + mode);
+      mode = undefined;
+    }
+    return mode;
   }
-
 }

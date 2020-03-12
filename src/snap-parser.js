@@ -1,8 +1,8 @@
 var snap = snap || {};
 
-snap.DOMParser = new function() {
+snap.parser = new function() {
 
-  this.parseFromXMLString = function(text) {
+  this.getElementsToLoad = function(text) {
     var document = new DOMParser().parseFromString(text, "text/xml");
     var error = document.querySelector('parsererror');
     if (error) {
@@ -10,12 +10,10 @@ snap.DOMParser = new function() {
       throw error;
     }
     var body = document.querySelector('body');
-    if (body) {
-      if (body.children.length == 1) {
-        return body.children[0];
-      }
+    if (body == null) {
+      return [];
     }
-    return body;
+    return body.childNodes;
   }
 
 }
