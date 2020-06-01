@@ -2,34 +2,41 @@ var snap = snap || {};
 
 snap.loader = new function() {
 
-  this.load = function(elements, target, mode, onContentLoaded) {
+  this.load = function(nodes, target, mode, onContentLoaded) {
     if (target == null) {
-      console.error('SNAP: no target specified to load elements.');
+      console.error('SNAP: no target specified to load nodes.');
       return;
     }
-    var mode = mode || snap.constants.mode.APPEND;
-    var elementsToRemove = [];
-    for (var i = 0, len = elements.length; i < len; i++) {
-      var element = elements[i];
-      this.loadElement(element, target, mode);
+    mode = mode || snap.constants.mode.APPEND;
+    var nodesToRemove = [];
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      this.loadNode(node, target, mode);
       if (mode === snap.constants.mode.REPLACE) {
-        elementsToRemove.push(target);
+        nodesToRemove.push(target);
       }
-      onContentLoaded(element);
+      onContentLoaded(node);
     }
-    for (var i = 0, len = elementsToRemove.length; i < len; i++) {
-      elementsToRemove[i].remove();
+    for (var j = 0; j < nodesToRemove.length; j++) {
+      nodesToRemove[j].remove();
     }
   }
 
-  this.loadElement = function(element, target, mode) {
-    // TODO should consider noteType before inserting
-    // If the node is an element node, the nodeType property will return 1.
-    // If the node is an attribute node, the nodeType property will return 2.
-    // If the node is a text node, the nodeType property will return 3.
-    // If the node is a comment node, the nodeType property will return 8.
+  this.loadNode = function(node, target, mode) {
     var position = this.getPositionToInsert(mode);
-    target.insertAdjacentElement(position, element);
+    switch (node.nodeType) {
+      case 1:
+        target.insertAdjacentElement(position, node);
+        return;
+      case 3:
+        target.insertAdjacentText(position, node);
+        return;
+      case 8: // comment
+        target.insertAdjacentHTML(position, node);
+        return;
+      default:
+        console.error('SNAP: can\'t load node of type ', node.nodeType);
+    }
   }
 
   this.getPositionToInsert = function(mode) {

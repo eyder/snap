@@ -10,7 +10,7 @@ describe('SNAP Parser', () => {
 
   beforeEach(async (done) => {
     resultHandle = await page.evaluateHandle(
-      (hmtl) => window.snap.parser.getElementsToLoad(hmtl),
+      (hmtl) => window.snap.parser.getNodesToLoad(hmtl),
       htmlToParse
     );
     done();

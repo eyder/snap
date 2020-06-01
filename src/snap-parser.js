@@ -2,7 +2,7 @@ var snap = snap || {};
 
 snap.parser = new function() {
 
-  this.getElementsToLoad = function(text) {
+  this.getNodesToLoad = function(text) {
     var document = new DOMParser().parseFromString(text, "text/xml");
     var error = document.querySelector('parsererror');
     if (error) {

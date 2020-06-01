@@ -15,7 +15,7 @@ snap.navs = new function() {
         snap.links.convertToAsync(links[j], nav, onContentReceived, onErrorReceived);
       }
     } catch (e) {
-      console.error("SNAP: error converting NAV links to async ", navs[i], e);
+      console.error("SNAP: error converting NAV links to async ", nav, e);
     }
   }
 

@@ -13,7 +13,7 @@ snap.links = new function() {
       link.addEventListener('click', function(event) {
         event.preventDefault();
         snap.async.get(event.target.href)
-          .then(function(elements) { onContentReceived(elements, triggerElement)})
+          .then(function(nodes) { onContentReceived(nodes, triggerElement)})
           .catch(function(error) { onErrorReceived(error, triggerElement)});
       });
     } catch (e) {

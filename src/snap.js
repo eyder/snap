@@ -1,31 +1,37 @@
 var snap = snap || {};
 
 snap.onContentLoaded = function(content) {
-  var links = snap.selectors.findLinks(content);
-  snap.links.convertAllToAsync(links, snap.onContentReceived, snap.onErrorReceived);
-  var navs = snap.selectors.findNavs(content);
-  snap.navs.convertAllLinksToAsync(navs, snap.onContentReceived, snap.onErrorReceived);
-}
-
-snap.onContentReceived = function(elements, triggerElement) {
-  if (!elements) return;
   try {
-    var target = snap.selectors.findTarget(triggerElement);
-    var mode = snap.selectors.getMode(triggerElement);
-    snap.loader.load(elements, target, mode, snap.onContentLoaded);
+    if (content && content.nodeType === 1) {
+      var links = snap.selectors.findLinks(content);
+      snap.links.convertAllToAsync(links, snap.onContentReceived, snap.onErrorReceived);
+      var navs = snap.selectors.findNavs(content);
+      snap.navs.convertAllLinksToAsync(navs, snap.onContentReceived, snap.onErrorReceived);
+    }
   } catch (e) {
-    console.error("SNAP: error loading content ", elements, e);
+    console.error("SNAP: error adding SNAP behavior to content", content, e);
   }
 }
 
-snap.onErrorReceived = function(errorElements, triggerElement) {
-  if (!errorElements) return;
+snap.onContentReceived = function(nodes, triggerElement) {
+  if (!nodes) return;
+  try {
+    var target = snap.selectors.findTarget(triggerElement);
+    var mode = snap.selectors.getMode(triggerElement);
+    snap.loader.load(nodes, target, mode, snap.onContentLoaded);
+  } catch (e) {
+    console.error("SNAP: error loading content ", nodes, e);
+  }
+}
+
+snap.onErrorReceived = function(errorNodes, triggerElement) {
+  if (!errorNodes) return;
   try {
     var target = snap.selectors.findErrorTarget(triggerElement);
     var mode = snap.selectors.getMode(triggerElement);
-    snap.loader.load(errorElements, target, mode, snap.onContentLoaded);
+    snap.loader.load(errorNodes, target, mode, snap.onContentLoaded);
   } catch (e) {
-    console.error("SNAP: error loading content ", errorElements, e);
+    console.error("SNAP: error loading content ", errorNodes, e);
   }
 }
 
