@@ -1,4 +1,4 @@
-describe('SNAP Selectors', () => {
+describe('Selectors', () => {
 
   let currentPageHTML;
   let resultHandle;

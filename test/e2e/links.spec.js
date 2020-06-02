@@ -1,5 +1,5 @@
 
-describe('SNAP links', () => {
+describe('links', () => {
 
   let currentPageHTML;
   let mocks;

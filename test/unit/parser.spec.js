@@ -1,4 +1,4 @@
-describe('SNAP Parser', () => {
+describe('Parser', () => {
 
   let resultHandle;
   let htmlToParse;

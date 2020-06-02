@@ -1,5 +1,5 @@
 
-describe('SNAP navs', () => {
+describe('navs', () => {
 
   let currentPageHTML;
   let mocks;
