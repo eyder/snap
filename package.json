@@ -18,6 +18,7 @@
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
     "eslint-plugin-es5": "^1.4.1",
+    "gherkin-jest": "^0.24.0",
     "jest": "^24.9.0",
     "jest-puppeteer": "^4.3.0",
     "puppeteer": "^1.20.0",
