@@ -4,7 +4,7 @@ module.exports = {
     "./test/jest-puppeteer-utils.js",
     "./test/mock-requests.js",
     "./test/setup-page.js",
-    "./test/steps/page.steps.js"
+    "./test/e2e/page.steps.js"
   ],
   testMatch: ["**/*.spec.js", "**/*.feature"],
   transform: {

@@ -24,6 +24,17 @@ cucumber.defineRule('the page has a link with data-snap-target {string}', (world
   );
 });
 
+cucumber.defineRule('the page has a nav with data-snap-target {string} and a link inside', (world, target) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <nav data-snap-target="${target}">
+        <a href="./link" id="link">Link</a>
+        <a href="./another-link" id="another-link">Another link</a>
+      </nav>
+    </body>`
+  );
+});
+
 cucumber.defineRule('the page has a {string} div', (world, id) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',

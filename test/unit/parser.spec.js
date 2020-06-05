@@ -30,18 +30,21 @@ describe('Parser', () => {
           <body>
             <h1>title</h1>
             <p>content</p>
+            <!-- comment -->
           </body>
         </html>`;
     });
 
     it(`returns a list containing all html body's children`,
       async () => {
-        expect(await page.evaluate((elements)=>elements.length, resultHandle)).toBe(5);
+        expect(await page.evaluate((elements)=>elements.length, resultHandle)).toBe(7);
         expect(await page.evaluate((elements)=>elements[0].nodeType, resultHandle)).toBe(3);
         expect(await page.evaluate((elements)=>elements[1].tagName, resultHandle)).toBe('h1');
         expect(await page.evaluate((elements)=>elements[2].nodeType, resultHandle)).toBe(3);
         expect(await page.evaluate((elements)=>elements[3].tagName, resultHandle)).toBe('p');
         expect(await page.evaluate((elements)=>elements[4].nodeType, resultHandle)).toBe(3);
+        expect(await page.evaluate((elements)=>elements[5].nodeType, resultHandle)).toBe(8);
+        expect(await page.evaluate((elements)=>elements[6].nodeType, resultHandle)).toBe(3);
       }
     );
   });
