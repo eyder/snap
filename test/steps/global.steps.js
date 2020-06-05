@@ -44,6 +44,14 @@ cucumber.defineRule('the page has a {string} div', (world, id) => {
   );
 });
 
+cucumber.defineRule('the page has a {string} div with class {string}', (world, id, clazz) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <div id="${id}" class="${clazz}">${id}</div>
+    </body>`
+  );
+});
+
 cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
   world.responseHTML = world.responseHTML.replace(
     '</body>',

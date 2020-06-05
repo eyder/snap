@@ -10,3 +10,11 @@ Feature: Asking for the target of an element
     When I visit the page
     And I ask for the target of the link
     Then I get a "div" with id "load-here" as result
+
+  Scenario: When data-snap-target points to more than one element, the first one is returned as the target
+    Given the page has a link with data-snap-target ".load-here"
+    And the page has a "div-one" div with class "load-here"
+    And the page has a "div-two" div with class "load-here"
+    When I visit the page
+    And I ask for the target of the link
+    Then I get a "div" with id "div-one" as result
