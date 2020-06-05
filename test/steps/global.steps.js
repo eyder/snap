@@ -10,9 +10,10 @@ cucumber.defineCreateWorld(() => {
       </body>`,
     responseHTML: `
       <html>
-        <body>
-        </body>
-      </html>`
+        <body></body>
+      </html>`,
+    resultHandle: undefined,
+    resultError: undefined,
   }
 })
 
@@ -46,12 +47,30 @@ cucumber.defineRule('the page has a {string} div', (world, id) => {
 cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
   world.responseHTML = world.responseHTML.replace(
     '</body>',
-    ` <${tag}>${content}</${tag}>
-    </body>`
+    `<${tag}>${content}</${tag}></body>`
   );
 });
 
-cucumber.defineRule('I visit the page', async (world) => {
+cucumber.defineRule('the server response has a comment {string}', (world, comment) => {
+  world.responseHTML = world.responseHTML.replace(
+    '</body>',
+    `<!--${comment}--></body>`
+  );
+});
+
+cucumber.defineRule('the server response has the text {string}', (world, text) => {
+  world.responseHTML = world.responseHTML.replace(
+    '</body>',
+    `${text}</body>`
+  );
+});
+
+cucumber.defineRule('the server response is {string}', (world, html) => {
+  world.responseHTML = html;
+});
+
+
+cucumber.defineRule(/I visit (the|a) page/, async (world) => {
   await global.setupPage(world.pageHTML);
   await global.mockRequests(page, [{
     url: '/link',
@@ -60,7 +79,7 @@ cucumber.defineRule('I visit the page', async (world) => {
   }]);
 });
 
-cucumber.defineRule('I click on the link', async (world) => {
+cucumber.defineRule('I click on the link', async () => {
   await page.click('#link');
 });
 
