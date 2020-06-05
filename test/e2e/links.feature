@@ -6,7 +6,7 @@ Feature: Links with data-snap-target attribute load content on the current page
   Scenario: Using data-snap-target on a link to load content on the current page
     Given the page has a link with data-snap-target "#load-here"
     And the page has a "load-here" div
-    And the link response has a "p" with content "loaded by SNAP!"
+    And the server response has a "p" with content "loaded by SNAP!"
     When I visit the page
     And I click on the link
     Then I see a "p" with content "loaded by SNAP!" as the last child of "load-here"

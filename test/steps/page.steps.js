@@ -43,7 +43,7 @@ cucumber.defineRule('the page has a {string} div', (world, id) => {
   );
 });
 
-cucumber.defineRule('the link response has a {string} with content {string}', (world, tag, content) => {
+cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
   world.responseHTML = world.responseHTML.replace(
     '</body>',
     ` <${tag}>${content}</${tag}>
