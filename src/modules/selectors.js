@@ -33,7 +33,7 @@ snap.selectors = new function() {
 
   this.getMode = function(triggerElement) {
     var mode = triggerElement.getAttribute(snap.constants.data.MODE);
-    if (mode && !snap.constants.modes.indexOf(mode) >= 0) {
+    if (mode && !(snap.constants.modes.indexOf(mode) >= 0)) {
       console.error('SNAP: invalid ' + snap.constants.data.MODE + ' = ' + mode);
       mode = undefined;
     }

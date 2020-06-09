@@ -18,3 +18,10 @@ Feature: Asking for the target of an element
     When I visit the page
     And I ask for the target of the link
     Then I get a "div" with id "div-one" as result
+
+  Scenario: A link with data-snap-mode prepend returns prepend mode
+    Given the page has a link with data-snap-target "#load-here" and data-snap-mode "prepend"
+    And the page has a "load-here" div
+    When I visit the page
+    And I ask for the mode of the link
+    Then I get "prepend" as result
