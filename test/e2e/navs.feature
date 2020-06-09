@@ -9,4 +9,4 @@ Feature: Links inside navs with data-snap-target attribute load their content on
     And the server response has a "p" with content "loaded by SNAP!"
     When I visit the page
     And I click on the link
-    Then I see a "p" with content "loaded by SNAP!" as the last child of "load-here"
+    Then I see a "p" with content "loaded by SNAP!" as the "last" child of "load-here"

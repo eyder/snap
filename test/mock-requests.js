@@ -11,6 +11,5 @@ global.mockRequests = async (page, mocks) => {
         return;
       }
     }
-    request.continue();
   });
 }

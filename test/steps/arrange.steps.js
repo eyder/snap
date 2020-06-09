@@ -1,4 +1,9 @@
 const { cucumber } = require('gherkin-jest');
+const { HookType } = require('stucumber');
+
+cucumber.addHook(HookType.BeforeScenarios, (world) => {
+  world.requestURL = '/link-' + Date.now();
+});
 
 cucumber.defineCreateWorld(() => {
   return {
@@ -8,6 +13,7 @@ cucumber.defineCreateWorld(() => {
       </head>
       <body>
       </body>`,
+    requestURL: '/link',
     responseHTML: `
       <html>
         <body></body>
@@ -15,12 +21,25 @@ cucumber.defineCreateWorld(() => {
     resultHandle: undefined,
     resultError: undefined,
   }
-})
+});
 
-cucumber.defineRule('the page has a link with data-snap-target {string}', (world, target) => {
+cucumber.defineRule("the page has a link with data-snap-target {string}", (world, target) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <a href="./link" id="link" data-snap-target="${target}">Link</a>
+    ` <a href=".${world.requestURL}" id="link"
+        data-snap-target="${target}"
+      >Link</a>
+    </body>`
+  );
+});
+
+cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-mode {string}", (world, target, mode) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <a href=".${world.requestURL}" id="link"
+        data-snap-target="${target}"
+        data-snap-mode="${mode}"
+      >Link</a>
     </body>`
   );
 });
@@ -29,33 +48,38 @@ cucumber.defineRule('the page has a nav with data-snap-target {string} and a lin
   world.pageHTML = world.pageHTML.replace(
     '</body>',
     ` <nav data-snap-target="${target}">
-        <a href="./link" id="link">Link</a>
+        <a href=".${world.requestURL}" id="link">Link</a>
         <a href="./another-link" id="another-link">Another link</a>
       </nav>
     </body>`
   );
 });
 
-cucumber.defineRule('the page has a {string} div', (world, id) => {
+cucumber.defineRule("the page has a {string} div", (world, id) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <div id="${id}">${id}</div>
-    </body>`
+    global.div(id, undefined, id)+'</body>'
   );
 });
 
-cucumber.defineRule('the page has a {string} div with class {string}', (world, id, clazz) => {
+cucumber.defineRule("the page has a {string} div with content {string}", (world, id, content) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <div id="${id}" class="${clazz}">${id}</div>
-    </body>`
+    global.div(id, undefined, content)+'</body>'
+  );
+});
+
+cucumber.defineRule("the page has a {string} div with class {string}", (world, id, clazz) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    global.div(id, clazz, id)+'</body>'
   );
 });
 
 cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
   world.responseHTML = world.responseHTML.replace(
     '</body>',
-    `<${tag}>${content}</${tag}></body>`
+    global.tag(tag, undefined, undefined, content)+'</body>'
   );
 });
 
@@ -76,26 +100,3 @@ cucumber.defineRule('the server response has the text {string}', (world, text) =
 cucumber.defineRule('the server response is {string}', (world, html) => {
   world.responseHTML = html;
 });
-
-
-cucumber.defineRule(/I visit (the|a) page/, async (world) => {
-  await global.setupPage(world.pageHTML);
-  await global.mockRequests(page, [{
-    url: '/link',
-    status: 200,
-    body: world.responseHTML
-  }]);
-});
-
-cucumber.defineRule('I click on the link', async () => {
-  await page.click('#link');
-});
-
-cucumber.defineRule('I see a {string} with content {string} as the last child of {string}', async (world, tag, content, parentId) => {
-  (await global.expect$Content(`#${parentId} ${tag}`)).toBe(content);
-});
-
-
-
-
-
