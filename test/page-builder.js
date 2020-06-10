@@ -1,5 +1,5 @@
 global.tag = (tagName, id, clazz, content) => {
-  return `<${tagName} id="${id}" ${clazz ? `class="${clazz}"`: ''}>${content}</${tagName}>`;
+  return `<${tagName} ${id ? `id="${id}"`: ''} ${clazz ? `class="${clazz}"`: ''}>${content}</${tagName}>`;
 }
 
 global.div = (id, clazz, content) => {
