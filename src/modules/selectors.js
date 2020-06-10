@@ -26,7 +26,7 @@ snap.selectors = new function() {
     var targetValue = triggerElement.getAttribute(targetAttribute);
     var target = document.querySelector(targetValue);
     if (target == null) {
-      console.error('SNAP: no target found for ' + targetAttribute + ' = ' + targetValue);
+      throw 'No target found for ' + targetAttribute + ' = ' + targetValue;
     }
     return target;
   }
@@ -34,8 +34,7 @@ snap.selectors = new function() {
   this.getMode = function(triggerElement) {
     var mode = triggerElement.getAttribute(snap.constants.data.MODE);
     if (mode && !(snap.constants.modes.indexOf(mode) >= 0)) {
-      console.error('SNAP: invalid ' + snap.constants.data.MODE + ' = ' + mode);
-      mode = undefined;
+      throw 'Invalid ' + snap.constants.data.MODE + ' = ' + mode;
     }
     return mode;
   }

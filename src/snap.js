@@ -20,7 +20,7 @@ snap.onContentReceived = function(nodes, triggerElement) {
     var mode = snap.selectors.getMode(triggerElement);
     snap.loader.load(nodes, target, mode, snap.onContentLoaded);
   } catch (e) {
-    console.error("SNAP: error loading content ", nodes, e);
+    console.error("SNAP: error loading content.", e, nodes);
   }
 }
 
@@ -31,7 +31,7 @@ snap.onErrorReceived = function(errorNodes, triggerElement) {
     var mode = snap.selectors.getMode(triggerElement);
     snap.loader.load(errorNodes, target, mode, snap.onContentLoaded);
   } catch (e) {
-    console.error("SNAP: error loading content ", errorNodes, e);
+    console.error("SNAP: error loading content.", e, errorNodes);
   }
 }
 

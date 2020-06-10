@@ -4,8 +4,7 @@ snap.loader = new function() {
 
   this.load = function(nodes, target, mode, onContentLoaded) {
     if (target == null) {
-      console.error('SNAP: no target specified to load nodes.');
-      return;
+      throw 'No target specified to load nodes.';
     }
     mode = mode || snap.constants.mode.APPEND;
     var nodesToRemove = [];
@@ -15,10 +14,12 @@ snap.loader = new function() {
       if (mode === snap.constants.mode.REPLACE) {
         nodesToRemove.push(target);
       }
-      onContentLoaded(node);
     }
     for (var j = 0; j < nodesToRemove.length; j++) {
       nodesToRemove[j].remove();
+    }
+    for (var k = 0; k < nodes.length; k++) {
+      onContentLoaded(nodes[k]);
     }
   }
 
@@ -35,7 +36,7 @@ snap.loader = new function() {
         target.insertAdjacentHTML(position, node);
         return;
       default:
-        console.error('SNAP: can\'t load node of type ', node.nodeType);
+        throw 'Can\'t load node of type ', node.nodeType;
     }
   }
 
