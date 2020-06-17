@@ -6,10 +6,8 @@ module.exports = {
     "./test/setup-page.js",
     "./test/page-builder.js",
     "./test/steps/arrange.steps.js",
-    "./test/steps/page-act.steps.js",
-    "./test/steps/page-assert.steps.js",
-    "./test/steps/unit-act.steps.js",
-    "./test/steps/unit-assert.steps.js",
+    "./test/steps/act.steps.js",
+    "./test/steps/assert.steps.js",
   ],
   testMatch: ["**/*.spec.js", "**/*.feature"],
   transform: {

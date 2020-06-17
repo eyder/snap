@@ -1,4 +1,4 @@
-Feature: Links inside navs with data-snap-target attribute load their content on the current page
+Feature: Using data-snap-target on a nav makes it's links load content inside the current page
   As a developer
   I want to change the behavior of every link inside a nav
   So that they load content inside the current page instead of loading another page in user browser
