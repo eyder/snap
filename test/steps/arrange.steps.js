@@ -2,7 +2,7 @@ const { cucumber } = require('gherkin-jest');
 const { HookType } = require('stucumber');
 
 cucumber.addHook(HookType.BeforeScenarios, (world) => {
-  world.requestURL = '/link-' + Date.now();
+  world.request.url = '/link-' + Date.now();
 });
 
 cucumber.defineCreateWorld(() => {
@@ -13,20 +13,25 @@ cucumber.defineCreateWorld(() => {
       </head>
       <body>
       </body>`,
-    requestURL: '/link',
-    responseHTML: `
+    request: {
+      url: '/link',
+      data: undefined, // filled by mock-request.js
+      method: undefined, // filled by mock-request.js
+    },
+    response: {
+      html: `
       <html>
         <body></body>
       </html>`,
-    resultHandle: undefined,
-    resultError: undefined,
+      status: 200
+    }
   }
 });
 
 cucumber.defineRule("the page has a link with data-snap-target {string}", (world, target) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <a href=".${world.requestURL}" id="link"
+    ` <a href=".${world.request.url}" id="link"
         data-snap-target="${target}"
       >Link</a>
     </body>`
@@ -36,9 +41,20 @@ cucumber.defineRule("the page has a link with data-snap-target {string}", (world
 cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-mode {string}", (world, target, mode) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <a href=".${world.requestURL}" id="link"
+    ` <a href=".${world.request.url}" id="link"
         data-snap-target="${target}"
         data-snap-mode="${mode}"
+      >Link</a>
+    </body>`
+  );
+});
+
+cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-error-target {string}", (world, target, errorTarget) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <a href=".${world.request.url}" id="link"
+        data-snap-target="${target}"
+        data-snap-error-target="${errorTarget}"
       >Link</a>
     </body>`
   );
@@ -48,10 +64,28 @@ cucumber.defineRule('the page has a nav with data-snap-target {string} and a lin
   world.pageHTML = world.pageHTML.replace(
     '</body>',
     ` <nav data-snap-target="${target}">
-        <a href=".${world.requestURL}" id="link">Link</a>
+        <a href=".${world.request.url}" id="link">Link</a>
         <a href="./another-link" id="another-link">Another link</a>
       </nav>
     </body>`
+  );
+});
+
+cucumber.defineRule("the page has a form with data-snap-target {string} and method {string}", (world, target, method) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <form action=".${world.request.url}" id="form" data-snap-target="${target}" method="${method}">
+        <input type="submit" id="submit" value="Submit">
+      </form>
+    </body>`
+  );
+});
+
+cucumber.defineRule("the form has an {string} text input with value {string}", (world, name, value) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</form>',
+    ` <input type="text" id="${name}" name="${name}" value="${value}">
+    </form>`
   );
 });
 
@@ -77,26 +111,30 @@ cucumber.defineRule("the page has a {string} div with class {string}", (world, i
 });
 
 cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
-  world.responseHTML = world.responseHTML.replace(
+  world.response.html = world.response.html.replace(
     '</body>',
     global.tag(tag, undefined, undefined, content)+'</body>'
   );
 });
 
 cucumber.defineRule('the server response has a comment {string}', (world, comment) => {
-  world.responseHTML = world.responseHTML.replace(
+  world.response.html = world.response.html.replace(
     '</body>',
     `<!--${comment}--></body>`
   );
 });
 
 cucumber.defineRule('the server response has the text {string}', (world, text) => {
-  world.responseHTML = world.responseHTML.replace(
+  world.response.html = world.response.html.replace(
     '</body>',
     `${text}</body>`
   );
 });
 
 cucumber.defineRule('the server response is {string}', (world, html) => {
-  world.responseHTML = html;
+  world.response.html = html;
+});
+
+cucumber.defineRule('the server response status is {int}', (world, status) => {
+  world.response.status = status;
 });

@@ -12,11 +12,8 @@ var snap;
   POSITION[REPLACE] = "beforebegin";
 
   this.load = function(nodes, target, triggerElement) {
-    if (!nodes) return;
+    if (!nodes || nodes.length === 0) return;
     try {
-      if (target == null) {
-        throw 'No target specified to load nodes.';
-      }
       var mode = getMode(triggerElement) || APPEND;
       var nodesToRemove = [];
       for (var i = 0; i < nodes.length; i++) {

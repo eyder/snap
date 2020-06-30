@@ -6,7 +6,7 @@ var snap = {
   converter: {
     convert: undefined,
   },
-  http: {
+  fetcher: {
     get: undefined,
     post: undefined,
   },

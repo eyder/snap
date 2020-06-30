@@ -25,3 +25,11 @@ cucumber.defineRule('I see the comment {string} as the {string} child of {string
   expect(await page.evaluate((child)=>child.nodeType, childHandle)).toBe(8);
   expect(await page.evaluate((child)=>child.nodeValue, childHandle)).toBe(text);
 });
+
+cucumber.defineRule('the form submission method is {string}', async (world, method) => {
+  expect(world.request.method).toBe(method);
+});
+
+cucumber.defineRule('the form submission data contains {word}', async (world, data) => {
+  expect(world.request.data).toContain(data);
+});

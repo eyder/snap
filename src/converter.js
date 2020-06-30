@@ -1,6 +1,6 @@
 var snap;
 
-(function(loader, http) {
+(function(fetcher) {
 
   var TARGET = 'data-snap-target';
   var ERROR_TARGET = 'data-snap-error-target';
@@ -8,9 +8,11 @@ var snap;
   this.convert = function(content) {
     if (content && content.nodeType === 1) {
       var navs = findTagsWithTarget(content, 'nav');
-      for (var j = 0; j < navs.length; j++) convertNav(navs[j]);
+      for (var i = 0; i < navs.length; i++) convertNav(navs[i]);
       var links = findTagsWithTarget(content, 'a');
-      for (var i = 0; i < links.length; i++) convertLink(links[i], links[i]);
+      for (i = 0; i < links.length; i++) convertLink(links[i], links[i]);
+      var forms = findTagsWithTarget(content, 'form');
+      for (i = 0; i < forms.length; i++) convertForm(forms[i]);
     }
   }
 
@@ -19,46 +21,49 @@ var snap;
   }
 
   function convertNav(nav) {
-    try {
-      var links = nav.querySelectorAll("a");
-      for (var i = 0; i < links.length; i++) {
-        convertLink(links[i], nav);
-      }
-    } catch (e) {
-      console.error("SNAP: error converting NAV links to async ", nav, e);
+    var links = nav.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      convertLink(links[i], nav);
     }
   }
 
   function convertLink(link, triggerElement) {
+    link.addEventListener('click', function(event) {
+      event.preventDefault();
+      var targets = findTargets(triggerElement);
+      if (!targets) return;
+      fetcher.fetch(event.target.href, triggerElement, targets);
+    });
+  }
+
+  function convertForm(form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var targets = findTargets(form);
+      if (!targets) return;
+      var formData = new FormData(form);
+      fetcher.fetch(event.target.action, form, targets, formData, event.target.method);
+    });
+  }
+
+  function findTargets(element) {
     try {
-      link.addEventListener('click', function(event) {
-        event.preventDefault();
-        http.get(event.target.href)
-          .then(function(nodes) { loadContent(nodes, triggerElement)})
-          .catch(function(error) { loadError(error, triggerElement)});
-      });
+      var successTargetValue = element.getAttribute(TARGET);
+      var successTarget = findTargetOnPage(successTargetValue);
+      var errorTargetValue = element.getAttribute(ERROR_TARGET);
+      var errorTarget = errorTargetValue ? findTargetOnPage(errorTargetValue) : undefined;
+      return [successTarget, errorTarget];
     } catch (e) {
-      console.error("SNAP: error converting link to async ", link, triggerElement, e);
+      console.error("SNAP: error looking for targets.", e, element);
     }
   }
 
-  function loadContent(nodes, triggerElement) {
-    var target = findTarget(triggerElement, TARGET);
-    loader.load(nodes, target, triggerElement);
-  }
-
-  function loadError(errorNodes, triggerElement) {
-    var target = findTarget(triggerElement, ERROR_TARGET) || findTarget(triggerElement, TARGET);
-    loader.load(errorNodes, target, triggerElement);
-  }
-
-  function findTarget(triggerElement, targetAttribute) {
-    var targetValue = triggerElement.getAttribute(targetAttribute);
+  function findTargetOnPage(targetValue) {
     var target = document.querySelector(targetValue);
     if (target == null) {
-      console.error("SNAP: No target found for " + targetAttribute + " = " + targetValue);
+      throw "Target '" + targetValue + "' not found on page.";
     }
     return target;
   }
 
-}).call(snap.converter, snap.loader, snap.http);
+}).call(snap.converter, snap.fetcher);
