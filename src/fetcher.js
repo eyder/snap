@@ -4,15 +4,16 @@ var snap;
 
   this.fetch = function(url, triggerElement, targets, formData, method) {
     var xhr = new XMLHttpRequest();
+    xhr.responseType = 'document';
     var successTarget = targets[0];
     var errorTarget = targets[1];
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) return;
       if (xhr.status >= 200 && xhr.status < 300) {
-        var nodes = parseBodyNodes(xhr.responseText);
+        var nodes = parseBodyNodes(xhr.responseXML);
         loader.load(nodes, successTarget, triggerElement);
       } else if (errorTarget) {
-        var errorNodes = parseBodyNodes(xhr.responseText);
+        var errorNodes = parseBodyNodes(xhr.responseXML);
         loader.load(errorNodes, errorTarget, triggerElement);
       } else {
         console.error('SNAP: HTTP error', xhr, triggerElement);
@@ -27,10 +28,9 @@ var snap;
     }
   }
 
-  function parseBodyNodes(text) {
+  function parseBodyNodes(document) {
     try {
-      if (!text) throw "Empty response text";
-      var document = new DOMParser().parseFromString(text, "text/xml");
+      if (!document) throw "Empty response text";
       var error = document.querySelector('parsererror');
       if (error) throw error;
       var body = document.querySelector('body');

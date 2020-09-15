@@ -1,5 +1,8 @@
 const { cucumber } = require('gherkin-jest');
 const { HookType } = require('stucumber');
+const fs = require('fs');
+
+const snapjs = fs.readFileSync('./dist/snap.min.js', 'utf8');
 
 cucumber.addHook(HookType.BeforeScenarios, (world) => {
   world.request.url = '/link-' + Date.now();
@@ -10,6 +13,7 @@ cucumber.defineCreateWorld(() => {
     pageHTML: `
       <head>
         <base href="http://localhost:8080"/>
+        <script>${snapjs}</script>
       </head>
       <body>
       </body>`,

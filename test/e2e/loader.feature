@@ -18,11 +18,26 @@ Feature: Loading different types of HTML content inside the current page
     And I click on the link
     Then I see the comment "comment loaded by SNAP!" as the "last" child of "load-here"
 
-  Scenario: When server response has no body tag, no changes are made on the current page
+  Scenario: When server response has no body tag, content is loaded correctly
     Given the page has a link with data-snap-target "#load-here"
     And the page has a "load-here" div with content "initial content"
-    And the server response is "<p>invalid HTML</p>"
+    And the server response is "<p>loaded by SNAP!</p>"
     When I visit the page
     And I click on the link
-    Then I see a "div" with content "initial content"
-    And I don't see a "p"
+    Then I see a "p" with content "loaded by SNAP!" as the "last" child of "load-here"
+
+  Scenario: When server response has DOCTYPE, content is loaded correctly
+    Given the page has a link with data-snap-target "#load-here"
+    And the page has a "load-here" div with content "initial content"
+    And the server response is "<!DOCTYPE html><html><body><p>loaded by SNAP!</p></body></html>"
+    When I visit the page
+    And I click on the link
+    Then I see a "p" with content "loaded by SNAP!" as the "last" child of "load-here"
+
+  Scenario: When server response has no DOCTYPE, content is loaded correctly
+    Given the page has a link with data-snap-target "#load-here"
+    And the page has a "load-here" div with content "initial content"
+    And the server response is "<html><body><p>loaded by SNAP!</p></body></html>"
+    When I visit the page
+    And I click on the link
+    Then I see a "p" with content "loaded by SNAP!" as the "last" child of "load-here"

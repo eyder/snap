@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run build && jest",
     "build-old": "uglifyjs src/modules/* src/snap.js -o dist/snap.min.js --compress --mangle",
-    "build": "uglifyjs src/declaration.js src/converter.js src/fetcher.js src/loader.js src/init.js -o dist/snap.min.js --compress --mangle"
+    "build": "uglifyjs src/declaration.js src/converter.js src/fetcher.js src/loader.js src/initializer.js -o dist/snap.min.js --compress --mangle"
   },
   "author": "Eyder Padoan Sant'Anna <eyderpadoan@gmail.com>",
   "license": "ISC",

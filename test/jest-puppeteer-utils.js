@@ -20,17 +20,29 @@ global.child$ = async (firstOrLast, selector) => {
 
 global.firstChild$ = async (selector) => {
   const parent = await page.$(selector);
-  return await page.evaluateHandle(
-    (parent) => parent.childNodes[0],
-    parent
-  );
+  return await global.nthChild$(parent, 0);
 }
 
 global.lastChild$ = async (selector) => {
   const parent = await page.$(selector);
+  const length = await page.evaluate((parent)=>parent.childNodes.length, parent);
+  const lastChild = await global.nthChild$(parent, length - 1);
+  if ((await global.isEmptyTextNode(lastChild)) && length > 1) {
+    return await global.nthChild$(parent, length - 2);
+  } else {
+    return lastChild;
+  }
+}
+
+global.nthChild$ = async (parent, n) => {
   return await page.evaluateHandle(
-    (parent) => parent.childNodes[parent.childNodes.length - 1],
-    parent
+    (parent, n) => parent.childNodes[n],
+    parent, n
   );
 }
 
+global.isEmptyTextNode = async (node) => {
+  const nodeValue = await page.evaluate((node)=>node.nodeValue, node);
+  const nodeType = await page.evaluate((node)=>node.nodeType, node);
+  return nodeType === 3 && nodeValue.trim() === '';
+}
