@@ -20,7 +20,13 @@ global.child$ = async (firstOrLast, selector) => {
 
 global.firstChild$ = async (selector) => {
   const parent = await page.$(selector);
-  return await global.nthChild$(parent, 0);
+  const length = await page.evaluate((parent)=>parent.childNodes.length, parent);
+  const firstChild = await global.nthChild$(parent, 0);
+  if ((await global.isEmptyTextNode(firstChild)) && length > 1) {
+    return await global.nthChild$(parent, 1);
+  } else {
+    return firstChild;
+  }
 }
 
 global.lastChild$ = async (selector) => {

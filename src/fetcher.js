@@ -35,7 +35,11 @@ var snap;
       if (error) throw error;
       var body = document.querySelector('body');
       if (!body) throw "No body tag found";
-      return body.childNodes;
+      var nodes = [];
+      for (var i = 0; i < body.childNodes.length; i++) {
+        nodes.push(body.childNodes[i]);
+      }
+      return nodes;
     } catch (error) {
       console.error("SNAP: Error reading respose text.", error);
       return [];

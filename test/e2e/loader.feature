@@ -41,3 +41,13 @@ Feature: Loading different types of HTML content inside the current page
     When I visit the page
     And I click on the link
     Then I see a "p" with content "loaded by SNAP!" as the "last" child of "load-here"
+
+  Scenario: When server response has two elements, both are loaded correctly
+    Given the page has a link with data-snap-target "#load-here"
+    And the page has a "load-here" div with content ""
+    And the server response has a "p" with content "p loaded by SNAP!"
+    And the server response has a "div" with content "div loaded by SNAP!"
+    When I visit the page
+    And I click on the link
+    Then I see a "p" with content "p loaded by SNAP!" as the "first" child of "load-here"
+    Then I see a "div" with content "div loaded by SNAP!" as the "last" child of "load-here"
