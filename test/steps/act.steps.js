@@ -14,6 +14,10 @@ cucumber.defineRule('I click on the link', async () => {
   await page.click('#link');
 });
 
+cucumber.defineRule('I click on the span', async () => {
+  await page.click('#span');
+});
+
 cucumber.defineRule('I submit the form', async () => {
   await page.click('#submit');
 });

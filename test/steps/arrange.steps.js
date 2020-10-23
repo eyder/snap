@@ -42,6 +42,14 @@ cucumber.defineRule("the page has a link with data-snap-target {string}", (world
   );
 });
 
+cucumber.defineRule("the link has a span inside", (world) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</a>',
+    ` <span id="span">span inside link</span>
+    </a>`
+  );
+});
+
 cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-mode {string}", (world, target, mode) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',

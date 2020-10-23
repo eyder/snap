@@ -32,7 +32,7 @@ var snap;
       event.preventDefault();
       var targets = findTargets(triggerElement);
       if (!targets) return;
-      fetcher.fetch(event.target.href, triggerElement, targets);
+      fetcher.fetch(link.getAttribute('href'), triggerElement, targets);
     });
   }
 
