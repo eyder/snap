@@ -1,7 +1,4 @@
 Feature: Using data-snap-target on a link makes it load content on the current page
-  As a developer
-  I want to change the behavior of links on a page
-  So that they load content inside the current page instead of loading another page in user browser
 
   Scenario: Using data-snap-target on a link to load content on the current page
     Given the page has a link with data-snap-target "#load-here"

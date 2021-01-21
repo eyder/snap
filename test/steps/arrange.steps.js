@@ -27,7 +27,8 @@ cucumber.defineCreateWorld(() => {
       <html>
         <body></body>
       </html>`,
-      status: 200
+      status: 200,
+      shouldTakeTooLong: false
     }
   }
 });
@@ -141,6 +142,10 @@ cucumber.defineRule('the server response has the text {string}', (world, text) =
     '</body>',
     `${text}</body>`
   );
+});
+
+cucumber.defineRule('the response takes too long', (world) => {
+  world.response.shouldTakeTooLong = true;
 });
 
 cucumber.defineRule('the server response is {string}', (world, html) => {

@@ -11,26 +11,79 @@ var snap;
   POSITION[PREPEND] = "afterbegin";
   POSITION[REPLACE] = "beforebegin";
 
-  this.load = function(nodes, target, triggerElement) {
+  var TRIGGER_LOADING_CLASS = 'snap-trigger-loading';
+  var TARGET_LOADING_CLASS = 'snap-target-loading';
+
+  var targetsLoading = [];
+  var triggersLoading = [];
+
+  this.loading = function(successTarget, triggerElement) {
+    addClass(triggerElement, TRIGGER_LOADING_CLASS);
+    addClass(successTarget, TARGET_LOADING_CLASS);
+    var i = targetsLoading.indexOf(successTarget);
+    if (i >= 0) {
+      removeClass(triggersLoading[i], TRIGGER_LOADING_CLASS);
+      triggersLoading[i] = triggerElement;
+    } else {
+      targetsLoading.push(successTarget);
+      triggersLoading.push(triggerElement);
+    }
+  }
+
+  function addClass(element, newClass) {
+    var classes = element.className.split(" ");
+    if (classes.indexOf(newClass) == -1) {
+      element.className += " " + newClass + " ";
+    }
+  }
+
+  this.success = function(successTarget, triggerElement, nodes) {
+    var i = targetsLoading.indexOf(successTarget);
+    if (i >= 0 && triggersLoading[i] !== triggerElement) return;
+    stopLoading(successTarget, triggerElement, i);
+    load(nodes, successTarget, triggerElement);
+  }
+
+  this.error = function(successTarget, triggerElement, errorNodes, errorTarget) {
+    var i = targetsLoading.indexOf(successTarget);
+    if (i >= 0 && triggersLoading[i] !== triggerElement) return;
+    stopLoading(successTarget, triggerElement, i);
+    if (errorTarget) {
+      load(errorNodes, errorTarget, triggerElement);
+    }
+  }
+
+  function stopLoading(successTarget, triggerElement, i) {
+    if (i >= 0) {
+      targetsLoading.splice(i, 1);
+      triggersLoading.splice(i, 1);
+    }
+    removeClass(triggerElement, TRIGGER_LOADING_CLASS);
+    removeClass(successTarget, TARGET_LOADING_CLASS);
+  }
+
+  function removeClass(element, classToRemove) {
+    var regexText = "\\b" + classToRemove + "\\b";
+    var regex = new RegExp(regexText,"g");
+    element.className = element.className.replace(regex, "");
+  }
+
+  function load(nodes, target, triggerElement) {
     if (!nodes || nodes.length === 0) return;
-    try {
-      var mode = getMode(triggerElement) || APPEND;
-      var nodesToRemove = [];
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        addNodeToDOM(node, target, mode);
-        if (mode === REPLACE) {
-          nodesToRemove.push(target);
-        }
+    var mode = getMode(triggerElement) || APPEND;
+    var nodesToRemove = [];
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      addNodeToDOM(node, target, mode);
+      if (mode === REPLACE) {
+        nodesToRemove.push(target);
       }
-      for (var j = 0; j < nodesToRemove.length; j++) {
-        nodesToRemove[j].remove();
-      }
-      for (var k = 0; k < nodes.length; k++) {
-        converter.convert(nodes[k]);
-      }
-    } catch (e) {
-      console.error("SNAP: error loading content.", e, nodes);
+    }
+    for (var j = 0; j < nodesToRemove.length; j++) {
+      nodesToRemove[j].remove();
+    }
+    for (var k = 0; k < nodes.length; k++) {
+      converter.convert(nodes[k]);
     }
   }
 

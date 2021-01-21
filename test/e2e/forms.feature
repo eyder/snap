@@ -1,7 +1,4 @@
 Feature: Using data-snap-target on a form makes it load the result of an action inside the current page
-  As a developer
-  I want to change the behavior of a form
-  So that they load the result of an action inside the current page instead of loading another page in user browser
 
   Scenario: Using data-snap-target on a form with GET method to load the result of an action on the current page
     Given the page has a form with data-snap-target "#load-here" and method "GET"

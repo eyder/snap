@@ -1,7 +1,4 @@
 Feature: Using data-snap-mode to specify the position where content should be loaded
-  As a developer
-  I want to be able to specify the position where content should be loaded relative to target element
-  So that I can decide how the current page should be changed after user interactions
 
   Scenario: Using data-snap-mode on a link to prepend loaded content on target element
     Given the page has a link with data-snap-target "#load-here" and data-snap-mode "prepend"

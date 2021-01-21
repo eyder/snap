@@ -8,11 +8,15 @@ global.mockRequests = async (page, mocks) => {
       ) {
         mock.request.data = request.url().includes("?") ? request.url() : request.postData();
         mock.request.method = request.method();
-        request.respond({
-          status: mock.response.status || 200,
-          contentType: 'text/html',
-          body: mock.response.html
-        });
+        if (mock.response.shouldTakeTooLong) {
+          request.continue();
+        } else {
+          request.respond({
+            status: mock.response.status || 200,
+            contentType: 'text/html',
+            body: mock.response.html
+          });
+        }
         return;
       }
     }

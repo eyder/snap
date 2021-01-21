@@ -4,13 +4,14 @@ var snap = {
     init: undefined,
   },
   loader: {
-    load: undefined,
+    loading: undefined,
+    success: undefined,
+    error: undefined,
   },
   converter: {
     convert: undefined,
   },
   fetcher: {
-    get: undefined,
-    post: undefined,
+    fetch: undefined,
   },
 }

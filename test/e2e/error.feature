@@ -1,7 +1,4 @@
 Feature: Using data-snap-error-target on a link to show error feedback on the current page
-  As a developer
-  I want to load error details on a specific target
-  So that I can give users proper feedback
 
   Scenario: Using data-snap-error-target on a link to load error content on the current page
     Given the page has a link with data-snap-target "#load-here" and data-snap-error-target "#error-here"

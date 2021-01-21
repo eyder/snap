@@ -1,6 +1,4 @@
 Feature: Loading different types of HTML content inside the current page
-  As a developer
-  I want to load any kind of HTML node in the current page
 
   Scenario: When server response has a body tag with a text node, the text is loaded
     Given the page has a link with data-snap-target "#load-here"

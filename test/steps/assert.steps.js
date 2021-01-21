@@ -34,3 +34,23 @@ cucumber.defineRule('the form submission method is {string}', async (world, meth
 cucumber.defineRule('the form submission data contains {word}', async (world, data) => {
   expect(world.request.data).toContain(data);
 });
+
+cucumber.defineRule('I see that the link has the class {string}', async (world, cssClass) => {
+  (await global.expect$('#link.'+cssClass)).not.toBeNull();
+});
+
+cucumber.defineRule('I see that the link doesn\'t have the class {string}', async (world, cssClass) => {
+  (await global.expect$('#link.'+cssClass)).toBeNull();
+});
+
+cucumber.defineRule('I see that the form has the class {string}', async (world, cssClass) => {
+  (await global.expect$('#form.'+cssClass)).not.toBeNull();
+});
+
+cucumber.defineRule('I see that {string} has the class {string}', async (world, selector, cssClass) => {
+  (await global.expect$(selector+'.'+cssClass)).not.toBeNull();
+});
+
+cucumber.defineRule('I see that {string} doesn\'t have the class {string}', async (world, selector, cssClass) => {
+  (await global.expect$(selector+'.'+cssClass)).toBeNull();
+});

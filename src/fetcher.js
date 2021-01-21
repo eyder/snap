@@ -8,15 +8,31 @@ var snap;
     var successTarget = targets[0];
     var errorTarget = targets[1];
     xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) return;
-      if (xhr.status >= 200 && xhr.status < 300) {
-        var nodes = parseBodyNodes(xhr.responseXML);
-        loader.load(nodes, successTarget, triggerElement);
-      } else if (errorTarget) {
-        var errorNodes = parseBodyNodes(xhr.responseXML);
-        loader.load(errorNodes, errorTarget, triggerElement);
-      } else {
-        console.error('SNAP: HTTP error', xhr, triggerElement);
+      if (xhr.readyState === 1) {
+        loader.loading(successTarget, triggerElement);
+      } else if (xhr.readyState === 4) {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var nodes = parseBodyNodes(xhr.responseXML);
+          try {
+            loader.success(successTarget, triggerElement, nodes);
+          } catch (e) {
+            console.error("SNAP: error loading content.", e, nodes);
+            loader.error(successTarget, triggerElement);
+          }
+        } else {
+          console.error('SNAP: HTTP error ' + xhr.status, xhr, triggerElement);
+          if (errorTarget) {
+            var errorNodes = parseBodyNodes(xhr.responseXML);
+            try {
+              loader.error(successTarget, triggerElement, errorNodes, errorTarget);
+            } catch (e) {
+              console.error("SNAP: error loading error content.", e, errorNodes);
+              loader.error(successTarget, triggerElement);
+            }
+          } else {
+            loader.error(successTarget, triggerElement);
+          }
+        }
       }
     };
     if (method && method.toLowerCase() === 'post') {

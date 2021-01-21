@@ -6,8 +6,6 @@ cucumber.defineRule("I visit the page", async (world) => {
     request: world.request,
     response: world.response
   }]);
-  //console.log(">>> pageHTML", world.pageHTML);
-  //console.log(">>> response.html", world.response.html);
 });
 
 cucumber.defineRule('I click on the link', async () => {
