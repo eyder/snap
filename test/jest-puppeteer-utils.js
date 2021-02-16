@@ -21,23 +21,23 @@ global.child$ = async (firstOrLast, selector) => {
 global.firstChild$ = async (selector) => {
   const parent = await page.$(selector);
   const length = await page.evaluate((parent)=>parent.childNodes.length, parent);
-  const firstChild = await global.nthChild$(parent, 0);
-  if ((await global.isEmptyTextNode(firstChild)) && length > 1) {
-    return await global.nthChild$(parent, 1);
-  } else {
-    return firstChild;
-  }
+  let i = 0;
+  let child;
+  do {
+    child = await global.nthChild$(parent, i++);
+  } while (i < length && (await global.isEmptyTextNode(child)));
+  return child;
 }
 
 global.lastChild$ = async (selector) => {
   const parent = await page.$(selector);
   const length = await page.evaluate((parent)=>parent.childNodes.length, parent);
-  const lastChild = await global.nthChild$(parent, length - 1);
-  if ((await global.isEmptyTextNode(lastChild)) && length > 1) {
-    return await global.nthChild$(parent, length - 2);
-  } else {
-    return lastChild;
-  }
+  let i = length - 1;
+  let child;
+  do {
+    child = await global.nthChild$(parent, i--);
+  } while (i >= 0 && (await global.isEmptyTextNode(child)));
+  return child;
 }
 
 global.nthChild$ = async (parent, n) => {

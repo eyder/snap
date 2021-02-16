@@ -4,7 +4,7 @@
   "description": "Create modern apps with ZERO JavaScript.",
   "main": "dist/snap.min.js",
   "scripts": {
-    "test": "npm run build && jest",
+    "test": "npm run build && jest -i",
     "build-old": "uglifyjs src/modules/* src/snap.js -o dist/snap.min.js --compress --mangle",
     "build": "uglifyjs src/declaration.js src/converter.js src/fetcher.js src/loader.js src/initializer.js -o dist/snap.min.js --compress --mangle"
   },
@@ -20,9 +20,9 @@
     "eslint": "^6.5.1",
     "eslint-plugin-es5": "^1.4.1",
     "gherkin-jest": "^0.24.0",
-    "jest": "^24.9.0",
-    "jest-puppeteer": "^4.3.0",
-    "puppeteer": "^1.20.0",
+    "jest": "^26.6.3",
+    "jest-puppeteer": "^4.4.0",
+    "puppeteer": "^7.1.0",
     "uglify-js": "^3.6.1"
   }
 }

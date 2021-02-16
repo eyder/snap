@@ -6,6 +6,7 @@ module.exports = {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      '--disable-web-security',
     ],
   },
   browserContext: 'default',
