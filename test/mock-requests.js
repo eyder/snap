@@ -9,7 +9,7 @@ global.mockRequests = async (page, mocks) => {
         mock.request.data = request.url().includes("?") ? request.url() : request.postData();
         mock.request.method = request.method();
         if (mock.response.shouldTakeTooLong) {
-          request.continue();
+          setTimeout(() => {request.continue()}, 100);
         } else {
           request.respond({
             status: mock.response.status || 200,
