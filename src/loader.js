@@ -11,17 +11,19 @@ var snap;
   POSITION[PREPEND] = "afterbegin";
   POSITION[REPLACE] = "beforebegin";
 
-  var LOADING_CLASS = 'snap-loading';
+  var PENDING_CLASS = 'pending';
+  var LOADING_CLASS = 'loading';
+  //var ACTIVE_CLASS = 'active';
 
   var targetsLoading = [];
   var triggersLoading = [];
 
   this.loading = function(successTarget, triggerElement) {
-    addClass(triggerElement, LOADING_CLASS);
+    addClass(triggerElement, PENDING_CLASS);
     addClass(successTarget, LOADING_CLASS);
     var i = targetsLoading.indexOf(successTarget);
     if (i >= 0) {
-      removeClass(triggersLoading[i], LOADING_CLASS);
+      removeClass(triggersLoading[i], PENDING_CLASS);
       triggersLoading[i] = triggerElement;
     } else {
       targetsLoading.push(successTarget);
@@ -57,7 +59,7 @@ var snap;
       targetsLoading.splice(i, 1);
       triggersLoading.splice(i, 1);
     }
-    removeClass(triggerElement, LOADING_CLASS);
+    removeClass(triggerElement, PENDING_CLASS);
     removeClass(successTarget, LOADING_CLASS);
   }
 
