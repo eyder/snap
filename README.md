@@ -4,11 +4,27 @@ Write modern web apps with serverside rendered html and snap data tags.
 
 ## Examples
 
-Adding an item to a list: ...
+Adding an item to a list
 
-Splitting content in tabs: ...
+```html
+<form data-append-to="#comments">
+  <input type="text" name="new-comment">
+  <input type="submit" value="Post">
+</form>
+<div id="comments">
+  <div>No page refresh. New comments are loaded below by SNAP.</div>
+</div>
+```
 
-Opening details in a panel: ...
+Splitting content in tabs
+```html
+TODO
+```
+
+Opening details in a panel
+```html
+TODO
+```
 
 ## How it works
 
