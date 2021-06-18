@@ -7,12 +7,12 @@ Write modern web apps with serverside rendered html and snap data tags.
 Adding an item to a list
 
 ```html
-<form data-append-to="#comments">
-  <input type="text" name="new-comment">
+<form method="POST" data-append-to="#comments">
+  <input type="text" name="comment">
   <input type="submit" value="Post">
 </form>
 <div id="comments">
-  <div>No page refresh. New comments are loaded below by SNAP.</div>
+  <div>POST response will be added below.</div>
 </div>
 ```
 
