@@ -19,7 +19,7 @@ They convert them to XHR and add response html to the current page.
 
 **data-append-to**="#comments" loads response html as the last child of "comments".
 
-**data-prepend-to**="#list loads response html as the first child of "list".
+**data-prepend-to**="#messages" loads response html as the first child of "messages".
 
 **data-load-on**="#details" replaces inner html of "details" with response html.
 
