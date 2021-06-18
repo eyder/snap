@@ -1,15 +1,6 @@
 var snap;
 
-(function(converter) {
-
-  var MODE = 'data-snap-mode';
-  var APPEND = "append";
-  var PREPEND =  "prepend";
-  var REPLACE = "replace";
-  var POSITION = {};
-  POSITION[APPEND] = "beforeend";
-  POSITION[PREPEND] = "afterbegin";
-  POSITION[REPLACE] = "beforebegin";
+(function(converter, finder) {
 
   var PENDING_CLASS = 'pending';
   var LOADING_CLASS = 'loading';
@@ -18,16 +9,16 @@ var snap;
   var targetsLoading = [];
   var triggersLoading = [];
 
-  this.loading = function(successTarget, triggerElement) {
-    addClass(triggerElement, PENDING_CLASS);
-    addClass(successTarget, LOADING_CLASS);
-    var i = targetsLoading.indexOf(successTarget);
+  this.loading = function(target, trigger) {
+    addClass(trigger, PENDING_CLASS);
+    addClass(target, LOADING_CLASS);
+    var i = targetsLoading.indexOf(target);
     if (i >= 0) {
       removeClass(triggersLoading[i], PENDING_CLASS);
-      triggersLoading[i] = triggerElement;
+      triggersLoading[i] = trigger;
     } else {
-      targetsLoading.push(successTarget);
-      triggersLoading.push(triggerElement);
+      targetsLoading.push(target);
+      triggersLoading.push(trigger);
     }
   }
 
@@ -38,29 +29,32 @@ var snap;
     }
   }
 
-  this.success = function(successTarget, triggerElement, nodes) {
-    var i = targetsLoading.indexOf(successTarget);
-    if (i >= 0 && triggersLoading[i] !== triggerElement) return;
-    stopLoading(successTarget, triggerElement, i);
-    load(nodes, successTarget, triggerElement);
+  this.success = function(target, trigger, nodes) {
+    if (!isCurrentTrigger(target, trigger)) return;
+    stopLoading(target, trigger);
+    load(nodes, target, trigger);
   }
 
-  this.error = function(successTarget, triggerElement, errorNodes, errorTarget) {
-    var i = targetsLoading.indexOf(successTarget);
-    if (i >= 0 && triggersLoading[i] !== triggerElement) return;
-    stopLoading(successTarget, triggerElement, i);
-    if (errorTarget) {
-      load(errorNodes, errorTarget, triggerElement);
+  this.error = function(target, trigger, nodes) {
+    if (!isCurrentTrigger(target, trigger)) return;
+    stopLoading(target, trigger);
+    if (nodes) {
+      var errorTarget = findErrorTarget(target);
+      load(nodes, errorTarget, trigger);
     }
   }
 
-  function stopLoading(successTarget, triggerElement, i) {
-    if (i >= 0) {
-      targetsLoading.splice(i, 1);
-      triggersLoading.splice(i, 1);
-    }
-    removeClass(triggerElement, PENDING_CLASS);
-    removeClass(successTarget, LOADING_CLASS);
+  function isCurrentTrigger(target, trigger) {
+    var i = targetsLoading.indexOf(target);
+    return i >= 0 && triggersLoading[i] === trigger;
+  }
+
+  function stopLoading(target, trigger) {
+    var i = targetsLoading.indexOf(target);
+    targetsLoading.splice(i, 1);
+    triggersLoading.splice(i, 1);
+    removeClass(trigger, PENDING_CLASS);
+    removeClass(target, LOADING_CLASS);
   }
 
   function removeClass(element, classToRemove) {
@@ -69,47 +63,49 @@ var snap;
     element.className = element.className.replace(regex, "");
   }
 
-  function load(nodes, target, triggerElement) {
+  function findErrorTarget(target) {
+    // TODO find error-bucket
+    return target;
+  }
+
+  function load(nodes, target, trigger) {
     if (!nodes || nodes.length === 0) return;
-    var mode = getMode(triggerElement) || APPEND;
-    var nodesToRemove = [];
+    var position = getPosition(trigger);
+    if (finder.isLoadOn(trigger)) {
+      target.innerHTML = '';
+    }
     for (var i = 0; i < nodes.length; i++) {
       var node = nodes[i];
-      addNodeToDOM(node, target, mode);
-      if (mode === REPLACE) {
-        nodesToRemove.push(target);
-      }
-    }
-    for (var j = 0; j < nodesToRemove.length; j++) {
-      nodesToRemove[j].remove();
+      addNodeToDOM(node, target, position);
     }
     for (var k = 0; k < nodes.length; k++) {
       converter.convert(nodes[k]);
     }
   }
 
-  function getMode(triggerElement) {
-    var mode = triggerElement.getAttribute(MODE);
-    if (mode && !([APPEND, PREPEND, REPLACE].indexOf(mode) >= 0)) {
-      throw 'Invalid ' + MODE + ' = ' + mode;
+  function getPosition(trigger) {
+    if (finder.isPrependTo(trigger)) {
+      return "afterbegin";
+    } else if (finder.isAppendTo(trigger) || finder.isLoadOn(trigger)) {
+      return "beforeend";
     }
-    return mode;
+    throw 'It looks like snap data-tag was removed from element ', trigger;
   }
 
-  function addNodeToDOM(node, target, mode) {
+  function addNodeToDOM(node, target, position) {
     switch (node.nodeType) {
       case 1:
-        target.insertAdjacentElement(POSITION[mode], node);
+        target.insertAdjacentElement(position, node);
         return;
       case 3:
-        target.insertAdjacentText(POSITION[mode], node.nodeValue);
+        target.insertAdjacentText(position, node.nodeValue);
         return;
       case 8: // comment
-        target.insertAdjacentHTML(POSITION[mode], "<!--" + node.nodeValue + "-->");
+        target.insertAdjacentHTML(position, "<!--" + node.nodeValue + "-->");
         return;
       default:
         throw 'Can\'t load node of type ', node.nodeType;
     }
   }
 
-}).call(snap.loader, snap.converter);
+}).call(snap.loader, snap.converter, snap.finder);

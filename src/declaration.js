@@ -14,4 +14,11 @@ var snap = {
   fetcher: {
     fetch: undefined,
   },
+  finder: {
+    triggers: undefined,
+    target: undefined,
+    isAppendTo: undefined,
+    isPrependTo: undefined,
+    isLoadOn: undefined,
+  }
 }

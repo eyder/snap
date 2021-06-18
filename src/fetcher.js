@@ -2,35 +2,27 @@ var snap;
 
 (function(loader) {
 
-  this.fetch = function(url, triggerElement, targets, formData, method) {
+  this.fetch = function(url, trigger, target, formData, method) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'document';
-    var successTarget = targets[0];
-    var errorTarget = targets[1];
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 1) {
-        loader.loading(successTarget, triggerElement);
+        loader.loading(target, trigger);
       } else if (xhr.readyState === 4) {
+        var nodes = parseBodyNodes(xhr.responseXML);
         if (xhr.status >= 200 && xhr.status < 300) {
-          var nodes = parseBodyNodes(xhr.responseXML);
           try {
-            loader.success(successTarget, triggerElement, nodes);
+            loader.success(target, trigger, nodes);
           } catch (e) {
             console.error("SNAP: error loading content.", e, nodes);
-            loader.error(successTarget, triggerElement);
+            loader.error(target, trigger);
           }
         } else {
-          console.error('SNAP: HTTP error ' + xhr.status, xhr, triggerElement);
-          if (errorTarget) {
-            var errorNodes = parseBodyNodes(xhr.responseXML);
-            try {
-              loader.error(successTarget, triggerElement, errorNodes, errorTarget);
-            } catch (e) {
-              console.error("SNAP: error loading error content.", e, errorNodes);
-              loader.error(successTarget, triggerElement);
-            }
-          } else {
-            loader.error(successTarget, triggerElement);
+          console.error('SNAP: HTTP error ' + xhr.status, xhr, trigger);
+          try {
+            loader.error(target, trigger, nodes);
+          } catch (e) {
+            console.error("SNAP: error loading error content.", e, nodes);
           }
         }
       }

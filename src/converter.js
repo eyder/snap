@@ -1,23 +1,16 @@
 var snap;
 
-(function(fetcher) {
-
-  var TARGET = 'data-snap-target';
-  var ERROR_TARGET = 'data-snap-error-target';
+(function(fetcher, finder) {
 
   this.convert = function(content) {
     if (content && content.nodeType === 1) {
-      var navs = findTagsWithTarget(content, 'nav');
+      var navs = finder.triggers(content, 'nav');
       for (var i = 0; i < navs.length; i++) convertNav(navs[i]);
-      var links = findTagsWithTarget(content, 'a');
+      var links = finder.triggers(content, 'a');
       for (i = 0; i < links.length; i++) convertLink(links[i], links[i]);
-      var forms = findTagsWithTarget(content, 'form');
+      var forms = finder.triggers(content, 'form');
       for (i = 0; i < forms.length; i++) convertForm(forms[i]);
     }
-  }
-
-  function findTagsWithTarget(rootElement, tag) {
-    return rootElement.querySelectorAll(tag + '[' + TARGET + ']');
   }
 
   function convertNav(nav) {
@@ -30,40 +23,20 @@ var snap;
   function convertLink(link, triggerElement) {
     link.addEventListener('click', function(event) {
       event.preventDefault();
-      var targets = findTargets(triggerElement);
-      if (!targets) return;
-      fetcher.fetch(link.getAttribute('href'), triggerElement, targets);
+      var target = finder.target(triggerElement);
+      if (!target) return;
+      fetcher.fetch(link.getAttribute('href'), triggerElement, target);
     });
   }
 
   function convertForm(form) {
     form.addEventListener('submit', function(event) {
       event.preventDefault();
-      var targets = findTargets(form);
-      if (!targets) return;
+      var target = finder.target(form);
+      if (!target) return;
       var formData = new FormData(form);
-      fetcher.fetch(event.target.action, form, targets, formData, event.target.method);
+      fetcher.fetch(event.target.action, form, target, formData, event.target.method);
     });
   }
 
-  function findTargets(element) {
-    try {
-      var successTargetValue = element.getAttribute(TARGET);
-      var successTarget = findTargetOnPage(successTargetValue);
-      var errorTargetValue = element.getAttribute(ERROR_TARGET);
-      var errorTarget = errorTargetValue ? findTargetOnPage(errorTargetValue) : undefined;
-      return [successTarget, errorTarget];
-    } catch (e) {
-      console.error("SNAP: error looking for targets.", e, element);
-    }
-  }
-
-  function findTargetOnPage(targetValue) {
-    var target = document.querySelector(targetValue);
-    if (target == null) {
-      throw "Target '" + targetValue + "' not found on page.";
-    }
-    return target;
-  }
-
-}).call(snap.converter, snap.fetcher);
+}).call(snap.converter, snap.fetcher, snap.finder);

@@ -10,6 +10,20 @@ global.expect$Content = async (selector) => {
   return expect(html);
 }
 
+global.nonEmptyChildCount$ = async (selector) => {
+  const parent = await page.$(selector);
+  const length = await page.evaluate((parent)=>parent.childNodes.length, parent);
+  let i = 0;
+  let count = 0;
+  do {
+    child = await global.nthChild$(parent, i++);
+    if (!(await global.isEmptyTextNode(child))) {
+      count++;
+    }
+  } while (i < length);
+  return count;
+}
+
 global.child$ = async (firstOrLast, selector) => {
   if (firstOrLast === 'first') {
     return global.firstChild$(selector);

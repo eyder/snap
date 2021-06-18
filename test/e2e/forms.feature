@@ -1,7 +1,7 @@
-Feature: Using data-snap-target on a form makes it load the result of an action inside the current page
+Feature: Forms
 
-  Scenario: Using data-snap-target on a form with GET method to load the result of an action on the current page
-    Given the page has a form with data-snap-target "#load-here" and method "GET"
+  Scenario: SNAP works on forms with GET method
+    Given the page has a form with data-append-to "#load-here" and method "GET"
     And the form has an "message" text input with value "hello"
     And the page has a "load-here" div
     And the server response has a "p" with content "loaded by SNAP!"
@@ -11,8 +11,8 @@ Feature: Using data-snap-target on a form makes it load the result of an action 
     And the form submission method is "GET"
     And the form submission data contains message=hello
 
-  Scenario: Using data-snap-target on a form with POST method to load the result of an action on the current page
-    Given the page has a form with data-snap-target "#load-here" and method "POST"
+  Scenario: SNAP works on forms with POST method
+    Given the page has a form with data-append-to "#load-here" and method "POST"
     And the form has an "message" text input with value "hello"
     And the page has a "load-here" div
     And the server response has a "p" with content "loaded by SNAP!"

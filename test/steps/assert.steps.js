@@ -1,5 +1,9 @@
 const { cucumber } = require('gherkin-jest');
 
+cucumber.defineRule('the initial content is kept inside the div', async (world, tag, content) => {
+  (await global.expect$Content('#the-div')).toBe('initial content');
+});
+
 cucumber.defineRule('I see a {string} with content {string}', async (world, tag, content) => {
   (await global.expect$Content(tag)).toBe(content);
 });
@@ -13,6 +17,36 @@ cucumber.defineRule('I see a {string} with content {string} as the {string} chil
   expect(await page.evaluate((child)=>child.nodeType, childHandle)).toBe(1);
   expect(await page.evaluate((child)=>child.tagName.toLowerCase(), childHandle)).toBe(tag.toLowerCase());
   expect(await page.evaluate((child)=>child.innerHTML, childHandle)).toBe(content);
+});
+
+cucumber.defineRule('I see only a {string} with content {string} inside {string}', async (world, tag, content, parentId) => {
+  const childCount = await global.nonEmptyChildCount$(`#${parentId}`);
+  expect(childCount).toBe(1);
+
+  const childHandle = await global.child$("first", `#${parentId}`);
+  expect(await page.evaluate((child)=>child.nodeType, childHandle)).toBe(1);
+  expect(await page.evaluate((child)=>child.tagName.toLowerCase(), childHandle)).toBe(tag.toLowerCase());
+  expect(await page.evaluate((child)=>child.innerHTML, childHandle)).toBe(content);
+});
+
+cucumber.defineRule('the error content is loaded on the error-bucket inside the div', async (world) => {
+  const childCount = await global.nonEmptyChildCount$('#error-bucket-inside');
+  expect(childCount).toBe(1);
+
+  const childHandle = await global.child$("first", '#error-bucket-inside');
+  expect(await page.evaluate((child)=>child.nodeType, childHandle)).toBe(1);
+  expect(await page.evaluate((child)=>child.tagName.toLowerCase(), childHandle)).toBe('p');
+  expect(await page.evaluate((child)=>child.innerHTML, childHandle)).toBe('Sorry, something went wrong...');
+});
+
+cucumber.defineRule('I see a {string} as a child of {string}', async (world, tag, parentId) => {
+  (await global.expect$(`#${parentId}`)).not.toBeNull();
+  (await global.expect$(`#${parentId} ${tag}`)).not.toBeNull();
+});
+
+cucumber.defineRule('I don\'t see a {string} as a child of {string}', async (world, tag, parentId) => {
+  (await global.expect$(`#${parentId}`)).not.toBeNull();
+  (await global.expect$(`#${parentId} ${tag}`)).toBeNull();
 });
 
 cucumber.defineRule('I see the text {string} as the {string} child of {string}', async (world, text, firstOrLast, parentId) => {

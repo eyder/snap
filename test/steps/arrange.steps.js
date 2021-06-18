@@ -33,11 +33,42 @@ cucumber.defineCreateWorld(() => {
   }
 });
 
-cucumber.defineRule("the page has a link with data-snap-target {string}", (world, target) => {
+cucumber.defineRule("the page has a link with data-append-to pointing to the div", (world) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
     ` <a href=".${world.request.url}" id="link"
-        data-snap-target="${target}"
+        data-append-to="#the-div"
+      >Link</a>
+    </body>`
+  );
+});
+
+
+cucumber.defineRule("the page has a link with data-append-to {string}", (world, target) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <a href=".${world.request.url}" id="link"
+        data-append-to="${target}"
+      >Link</a>
+    </body>`
+  );
+});
+
+cucumber.defineRule("the page has a link with data-prepend-to {string}", (world, target) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <a href=".${world.request.url}" id="link"
+        data-prepend-to="${target}"
+      >Link</a>
+    </body>`
+  );
+});
+
+cucumber.defineRule("the page has a link with data-load-on {string}", (world, target) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    ` <a href=".${world.request.url}" id="link"
+        data-load-on="${target}"
       >Link</a>
     </body>`
   );
@@ -51,32 +82,10 @@ cucumber.defineRule("the link has a span inside", (world) => {
   );
 });
 
-cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-mode {string}", (world, target, mode) => {
+cucumber.defineRule('the page has a nav with data-append-to {string} and a link inside', (world, target) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <a href=".${world.request.url}" id="link"
-        data-snap-target="${target}"
-        data-snap-mode="${mode}"
-      >Link</a>
-    </body>`
-  );
-});
-
-cucumber.defineRule("the page has a link with data-snap-target {string} and data-snap-error-target {string}", (world, target, errorTarget) => {
-  world.pageHTML = world.pageHTML.replace(
-    '</body>',
-    ` <a href=".${world.request.url}" id="link"
-        data-snap-target="${target}"
-        data-snap-error-target="${errorTarget}"
-      >Link</a>
-    </body>`
-  );
-});
-
-cucumber.defineRule('the page has a nav with data-snap-target {string} and a link inside', (world, target) => {
-  world.pageHTML = world.pageHTML.replace(
-    '</body>',
-    ` <nav data-snap-target="${target}">
+    ` <nav data-append-to="${target}">
         <a href=".${world.request.url}" id="link">Link</a>
         <a href="./another-link" id="another-link">Another link</a>
       </nav>
@@ -84,10 +93,10 @@ cucumber.defineRule('the page has a nav with data-snap-target {string} and a lin
   );
 });
 
-cucumber.defineRule("the page has a form with data-snap-target {string} and method {string}", (world, target, method) => {
+cucumber.defineRule("the page has a form with data-append-to {string} and method {string}", (world, target, method) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
-    ` <form action=".${world.request.url}" id="form" data-snap-target="${target}" method="${method}">
+    ` <form action=".${world.request.url}" id="form" data-append-to="${target}" method="${method}">
         <input type="submit" id="submit" value="Submit">
       </form>
     </body>`
@@ -109,6 +118,14 @@ cucumber.defineRule("the page has a {string} div", (world, id) => {
   );
 });
 
+cucumber.defineRule("the page has a div with some initial content", (world, id) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</body>',
+    global.div('the-div', undefined, 'initial content')+'</body>'
+  );
+});
+
+
 cucumber.defineRule("the page has a {string} div with content {string}", (world, id, content) => {
   world.pageHTML = world.pageHTML.replace(
     '</body>',
@@ -121,6 +138,24 @@ cucumber.defineRule("the page has a {string} div with class {string}", (world, i
     '</body>',
     global.div(id, clazz, id)+'</body>'
   );
+});
+
+cucumber.defineRule("the div has an error-bucket inside", (world, id, clazz) => {
+  world.pageHTML = world.pageHTML.replace(
+    '</div>',
+    global.div('error-bucket-inside', 'error-bucket', undefined)+`
+    </div>`
+  );
+});
+
+// Response
+
+cucumber.defineRule('the server response will be an error', (world, tag, content) => {
+  world.response.html = world.response.html.replace(
+    '</body>',
+    global.tag('p', undefined, undefined, 'Sorry, something went wrong...')+'</body>'
+  );
+  world.response.status = 500;
 });
 
 cucumber.defineRule('the server response has a {string} with content {string}', (world, tag, content) => {
