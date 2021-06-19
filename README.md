@@ -4,7 +4,7 @@ Write modern web apps with serverside rendered html and snap data tags.
 
 ## Examples
 
-Adding an item to a list
+Updating a list with new content.
 
 ```html
 <form method="POST" data-append-to="#comments">
@@ -12,11 +12,13 @@ Adding an item to a list
   <input type="submit" value="Post">
 </form>
 <div id="comments">
-  <div>POST response will be added below.</div>
+  <div>first comment.</div>
+  <!-- Form response will be loaded here -->
 </div>
 ```
 
-Splitting content in tabs
+Changing tabs 
+
 ```html
 TODO
 ```
