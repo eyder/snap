@@ -39,8 +39,10 @@ var snap;
     if (!isCurrentTrigger(target, trigger)) return;
     stopLoading(target, trigger);
     if (nodes) {
-      var errorTarget = findErrorTarget(target);
-      load(nodes, errorTarget, trigger);
+      var errorBucket = finder.errorBucket(target);
+      if (errorBucket) {
+        load(nodes, errorBucket, trigger);
+      }
     }
   }
 
@@ -61,11 +63,6 @@ var snap;
     var regexText = "\\b" + classToRemove + "\\b";
     var regex = new RegExp(regexText,"g");
     element.className = element.className.replace(regex, "");
-  }
-
-  function findErrorTarget(target) {
-    // TODO find error-bucket
-    return target;
   }
 
   function load(nodes, target, trigger) {

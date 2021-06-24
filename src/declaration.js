@@ -17,6 +17,7 @@ var snap = {
   finder: {
     triggers: undefined,
     target: undefined,
+    errorBucket: undefined,
     isAppendTo: undefined,
     isPrependTo: undefined,
     isLoadOn: undefined,

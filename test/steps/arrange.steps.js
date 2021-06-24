@@ -143,7 +143,7 @@ cucumber.defineRule("the page has a {string} div with class {string}", (world, i
 cucumber.defineRule("the div has an error-bucket inside", (world, id, clazz) => {
   world.pageHTML = world.pageHTML.replace(
     '</div>',
-    global.div('error-bucket-inside', 'error-bucket', undefined)+`
+    global.div('error-bucket-inside', 'error-bucket', '')+`
     </div>`
   );
 });

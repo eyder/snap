@@ -1,7 +1,7 @@
 const { cucumber } = require('gherkin-jest');
 
 cucumber.defineRule('the initial content is kept inside the div', async (world, tag, content) => {
-  (await global.expect$Content('#the-div')).toBe('initial content');
+  (await global.expect$Content('#the-div')).toContain('initial content');
 });
 
 cucumber.defineRule('I see a {string} with content {string}', async (world, tag, content) => {
